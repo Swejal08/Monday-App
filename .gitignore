@@ -1,0 +1,25 @@
+# Git ignore for Turborepo monorepo
+
+# Node modules
+node_modules
+fe/node_modules
+be/node_modules
+
+# Turborepo cache
+.turbo/
+
+# Build artifacts
+dist
+build
+fe/dist
+fe/build
+be/dist
+be/build
+
+# Environment variables
+.env
+.env.local
+fe/.env
+fe/.env.local
+be/.env
+be/.env.local
