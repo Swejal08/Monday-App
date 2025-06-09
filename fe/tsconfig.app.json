@@ -7,8 +7,11 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "incremental": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
 
     /* Bundler mode */
