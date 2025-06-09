@@ -57,7 +57,7 @@ const Multiplier = () => {
     }
   };
 
-  if (itemError || !item) {
+  if (itemError) {
     errorNotification('Error fetching item board');
     return <h1>Error fetching item</h1>;
   }
@@ -87,6 +87,7 @@ const Multiplier = () => {
     500
   );
   const handleFactorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!item) return;
     const value = parseFloat(e.target.value);
     debouncedCalculateFactor(value, item.itemId, item.boardId);
   };
@@ -114,17 +115,18 @@ const Multiplier = () => {
   };
 
   const onCalculate = async (data: FactorFormData) => {
+    if (!item) return;
     await calculateFactor(data.factor, item.itemId, item.boardId);
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center pt-16">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">
         Calculate Factor
       </h1>
       <form
         onSubmit={handleSubmit(onCalculate)}
-        className="flex items-center space-x-4"
+        className="flex items-center space-x-4 mb-12"
       >
         <div className="flex w-full max-w-sm items-center gap-2">
           <Input
@@ -151,7 +153,7 @@ const Multiplier = () => {
         title="Calculation History"
         value="history"
         isFetching={isFetching}
-        loadingComponent={<TableLoading loadingRows={3} loadingColumns={4} />}
+        loadingComponent={<TableLoading loadingRows={3} loadingColumns={3} />}
         isEmpty={history.length === 0 && !isFetching}
         emptyComponent={
           <div className="text-center text-gray-500">

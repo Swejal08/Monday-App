@@ -2,11 +2,15 @@ import { toast } from 'react-toastify';
 
 const useNotification = () => {
   const successNotification = (message: string) => {
-    toast.success(message);
+    toast.success(message, {
+      autoClose: 2000,
+    });
   };
 
   const errorNotification = (message: string) => {
-    toast.error(message);
+    toast.error(message, {
+      autoClose: 2000,
+    });
   };
 
   return { successNotification, errorNotification };

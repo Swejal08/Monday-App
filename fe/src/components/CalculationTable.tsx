@@ -17,16 +17,14 @@ const CalculationTable = ({ history }: CalculationTableProps) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[50px]">No.</TableHead>
-          <TableHead className="text-center w-[50px]">Input</TableHead>
-          <TableHead className="text-center w-[50px]">Factor</TableHead>
-          <TableHead className="text-center w-[50px]">Result</TableHead>
+          <TableHead className="text-center">Input</TableHead>
+          <TableHead className="text-center">Factor</TableHead>
+          <TableHead className="text-center">Result</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {history.map((h, index) => (
+        {history.map((h) => (
           <TableRow key={h._id}>
-            <TableCell className="font-medium">{index + 1}</TableCell>
             <TableCell className="text-center">{h.number}</TableCell>
             <TableCell className="text-center">{h.factor}</TableCell>
             <TableCell className="text-center">{h.number * h.factor}</TableCell>

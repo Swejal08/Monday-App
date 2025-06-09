@@ -25,9 +25,14 @@ const Accordion = ({
   emptyComponent,
 }: AccordionProps) => {
   return (
-    <AccordionBar type="single" collapsible defaultValue={value}>
+    <AccordionBar
+      type="single"
+      collapsible
+      defaultValue={value}
+      className="w-[400px]"
+    >
       <AccordionItem value={value}>
-        <AccordionTrigger>{title}</AccordionTrigger>
+        <AccordionTrigger className="justify-center">{title}</AccordionTrigger>
         <AccordionContent>
           {isFetching ? loadingComponent : isEmpty ? emptyComponent : children}
         </AccordionContent>
