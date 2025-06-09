@@ -7,7 +7,9 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 # Install all dependencies
-RUN yarn install --frozen-lockfile
+RUN yarn install
+
+RUN yarn add ts-node-dev
 
 # Copy source code
 COPY . .
@@ -19,4 +21,4 @@ RUN yarn tsc
 EXPOSE 3000
 
 # Start the application
-CMD ["node", "dist/src/index.js"] 
+CMD ["npx", "ts-node-dev", "--respawn", "--transpile-only", "src/index.ts"]
