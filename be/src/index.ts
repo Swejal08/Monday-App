@@ -94,7 +94,7 @@ app.use(
 // };
 
 // Routes with appropriate middleware
-app.use('/webhooks', webhookRoute);
+app.use('/webhook-input', webhookRoute);
 app.use('/items', itemsRoute);
 
 // 404 handler

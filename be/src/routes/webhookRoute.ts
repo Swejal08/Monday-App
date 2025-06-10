@@ -6,5 +6,5 @@ router.get('/', (req, res) => {
   res.send(req.body);
 });
 
-router.post('/webhook-input', inputChangeController);
+router.post('/', inputChangeController);
 export default router;

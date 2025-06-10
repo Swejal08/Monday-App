@@ -4,7 +4,9 @@ import { Loader2Icon } from 'lucide-react';
 import { debounce } from '@/lib/utils';
 import { useForm } from 'react-hook-form';
 import type { CalculationLogResponse, FactorFormData } from '@/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import mondaySdk from 'monday-sdk-js';
+
 import useMondayItem from '@/hooks/useMondayItem';
 import useMutation from '@/hooks/useMutation';
 import useFetcher from '@/hooks/useFetcher';
@@ -15,6 +17,7 @@ import Accordion from '@/components/Accordion';
 import TableLoading from '@/components/TableLoading';
 import useNotification from '@/hooks/useNotification';
 
+const monday = mondaySdk();
 const Multiplier = () => {
   const { item, error: itemError } = useMondayItem();
   const { fetcher } = useFetcher();
@@ -24,6 +27,7 @@ const Multiplier = () => {
   const [history, setHistory] = useState<CalculationLogResponse['data']>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { register, handleSubmit, setValue } = useForm<FactorFormData>({
     defaultValues: {
@@ -38,6 +42,21 @@ const Multiplier = () => {
 
   useEffect(() => {
     fetchCalculationHistory();
+
+    // Start polling every 3 seconds
+    if (item?.itemId) {
+      pollingIntervalRef.current = setInterval(() => {
+        fetchCalculationHistorySilently();
+      }, 3000);
+    }
+
+    // Cleanup interval on unmount or when dependencies change
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+    };
   }, [page, item?.itemId]);
 
   const fetchCalculationHistory = async () => {
@@ -57,6 +76,20 @@ const Multiplier = () => {
     }
   };
 
+  const fetchCalculationHistorySilently = async () => {
+    if (!item?.itemId) return;
+    try {
+      const response = await fetcher(
+        `/items/${item.itemId}/logs?page=${page}&limit=${PAGE_SIZE}`
+      );
+      setHistory(response.data);
+      setPage(response.pagination.page);
+      setTotalPages(response.pagination.totalPages);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   if (itemError) {
     errorNotification('Error fetching item board');
     return <h1>Error fetching item</h1>;
@@ -68,12 +101,7 @@ const Multiplier = () => {
       const response = await fetcher(`/items/${item.itemId}`);
       setValue('factor', response.factor.toString());
     } catch (err) {
-      // monday.execute('notice', {
-      //   message: 'Failed to fetch factor. Please try again.',
-      //   type: 'error',
-      //   timeout: 5000,
-      // });
-      console.log(err);
+      console.error(err);
       errorNotification('Failed to fetch factor. Please try again.');
     }
   };

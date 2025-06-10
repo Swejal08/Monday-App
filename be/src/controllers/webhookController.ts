@@ -1,3 +1,4 @@
+import { CalculationLog } from '@/database/models/CalculationLog';
 import { Item } from '@/database/models/Item';
 import { addHistory, upsertItem } from '@/services/itemService';
 import { updateOutputColumnValue } from '@/services/webhookService';
