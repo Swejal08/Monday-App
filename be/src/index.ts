@@ -13,7 +13,6 @@ import morgan from 'morgan';
 import webhookRoute from '@/routes/webhookRoute';
 import itemsRoute from '@/routes/itemRoutes';
 import {
-  errorHandler,
   notFoundHandler,
   setupGlobalErrorHandlers,
 } from '@/middleware/errorHandler';
@@ -24,29 +23,7 @@ const port = process.env.PORT || 8000;
 // Load environment variables
 require('dotenv').config();
 
-// Setup global error handlers for uncaught exceptions and unhandled rejections
 setupGlobalErrorHandlers();
-
-// Rate Limiting
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100, // limit each IP to 100 requests per windowMs
-//   message: {
-//     error: 'Too many requests from this IP, please try again later.',
-//   },
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-
-// const webhookLimiter = rateLimit({
-//   windowMs: 1 * 60 * 1000, // 1 minute
-//   max: 50, // limit webhook endpoints to 50 requests per minute
-//   message: {
-//     error: 'Too many webhook requests, please try again later.',
-//   },
-// });
-
-// app.use(limiter);
 
 app.use(morgan('dev'));
 
@@ -77,31 +54,10 @@ app.use(
   })
 );
 
-// app.use(mongoSanitize());
-
-// // Security middleware for sensitive routes
-// const authMiddleware = (req, res, next) => {
-//   const apiKey = req.headers['x-api-key'];
-//   const expectedApiKey = process.env.API_KEY;
-
-//   if (expectedApiKey && apiKey !== expectedApiKey) {
-//     return res.status(401).json({
-//       error: 'Unauthorized: Invalid API key',
-//     });
-//   }
-
-//   next();
-// };
-
-// Routes with appropriate middleware
 app.use('/webhook-input', webhookRoute);
 app.use('/items', itemsRoute);
 
-// 404 handler
-// app.use('*', notFoundHandler);
-
-// Global error handler
-app.use(errorHandler);
+// app.use(errorHandler);
 
 const gracefulShutdown = (signal) => {
   console.log(`Received ${signal}. Shutting down gracefully...`);

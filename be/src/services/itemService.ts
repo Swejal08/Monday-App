@@ -5,6 +5,7 @@ import { updateOutputColumnValue } from '@/services/webhookService';
 import { InternalServerError } from '@/utils/BaseError';
 import mongoose from 'mongoose';
 import { NextFunction } from 'express';
+import logger from '@/logger';
 
 interface UpsertItemParams {
   factor?: number;
@@ -17,18 +18,6 @@ interface HistoryParams {
   input: number;
   createdAt: Date;
 }
-
-interface UpdateFactorParams {
-  factor: number;
-  boardId: string;
-  itemId: string;
-}
-
-export const asyncHandler = (fn: Function) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
-};
 
 const upsertItem = async (
   itemId: string,
@@ -61,10 +50,15 @@ const upsertItem = async (
       return newItem;
     }
   } catch (error) {
+    logger.error('Failed to process item upsert', {
+      itemId,
+      operation: 'upsertItem',
+      error: error.message,
+    });
     throw new InternalServerError('Failed to process item upsert', {
       itemId,
       operation: 'upsertItem',
-      originalError: error.message,
+      error: error.message,
     });
   }
 };
@@ -86,10 +80,15 @@ const addHistory = async (itemId: string, history: HistoryParams) => {
 
     return historyRecord;
   } catch (error) {
+    logger.error('Failed to add history', {
+      itemId,
+      operation: 'addHistory',
+      error: error.message,
+    });
     throw new InternalServerError('Failed to add history', {
       itemId,
-      operation: 'upsertItem',
-      originalError: error.message,
+      operation: 'addHistory',
+      error: error.message,
     });
   }
 };
@@ -115,6 +114,11 @@ const updateFactor = async ({ factor, boardId, itemId }) => {
     return { message: 'Factor updated successfully', history: history };
   } catch (error) {
     await session.abortTransaction();
+    logger.error('Failed to update factor', {
+      itemId,
+      operation: 'updateFactor',
+      error: error.message,
+    });
   } finally {
     await session.endSession();
   }

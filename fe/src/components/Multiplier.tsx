@@ -133,11 +133,13 @@ const Multiplier = () => {
         },
       },
       onSuccess: () => {
-        successNotification('Calculation updated successfully');
+        successNotification('Calculation done successfully');
         fetchCalculationHistory();
       },
       onError: () => {
-        errorNotification('Something went wrong');
+        errorNotification(
+          'An unexpected error occurred while performing the calculation.'
+        );
       },
     });
   };
@@ -169,7 +171,7 @@ const Multiplier = () => {
           <Button
             size="sm"
             variant="outline"
-            disabled={isMutating}
+            disabled={isMutating || history.length === 0}
             type="submit"
           >
             {isMutating && <Loader2Icon className="animate-spin" />}
@@ -184,7 +186,7 @@ const Multiplier = () => {
         loadingComponent={<TableLoading loadingRows={3} loadingColumns={3} />}
         isEmpty={history.length === 0 && !isFetching}
         emptyComponent={
-          <div className="text-center text-gray-500">
+          <div className="text-center pr-5 text-gray-500">
             No calculation history
           </div>
         }

@@ -152,73 +152,73 @@ const normalizeError = (error: any): BaseError => {
 /**
  * Main error handling middleware
  */
-export const errorHandler = (
-  error: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
-  // Generate a unique request ID for tracking
-  const requestId =
-    (req.headers['x-request-id'] as string) ||
-    `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+// export const errorHandler = (
+//   error: any,
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): void => {
+//   // Generate a unique request ID for tracking
+//   const requestId =
+//     (req.headers['x-request-id'] as string) ||
+//     `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-  // Normalize the error
-  const normalizedError = normalizeError(error);
+//   // Normalize the error
+//   const normalizedError = normalizeError(error);
 
-  // Log the error with context
-  const logContext = {
-    requestId,
-    method: req.method,
-    url: req.originalUrl,
-    userAgent: req.get('User-Agent'),
-    ip: req.ip,
-    body: req.method !== 'GET' ? req.body : undefined,
-    query: req.query,
-    params: req.params,
-    error: {
-      name: normalizedError.name,
-      message: normalizedError.message,
-      code: normalizedError.code,
-      statusCode: normalizedError.statusCode,
-      stack: normalizedError.stack,
-      context: normalizedError.context,
-    },
-  };
+//   // Log the error with context
+//   const logContext = {
+//     requestId,
+//     method: req.method,
+//     url: req.originalUrl,
+//     userAgent: req.get('User-Agent'),
+//     ip: req.ip,
+//     body: req.method !== 'GET' ? req.body : undefined,
+//     query: req.query,
+//     params: req.params,
+//     error: {
+//       name: normalizedError.name,
+//       message: normalizedError.message,
+//       code: normalizedError.code,
+//       statusCode: normalizedError.statusCode,
+//       stack: normalizedError.stack,
+//       context: normalizedError.context,
+//     },
+//   };
 
-  // Log based on error severity
-  if (normalizedError.statusCode >= 500) {
-    logger.error('Server Error', logContext);
-  } else if (normalizedError.statusCode >= 400) {
-    logger.warn('Client Error', logContext);
-  } else {
-    logger.info('Error Handled', logContext);
-  }
+//   // Log based on error severity
+//   if (normalizedError.statusCode >= 500) {
+//     logger.error('Server Error', logContext);
+//   } else if (normalizedError.statusCode >= 400) {
+//     logger.warn('Client Error', logContext);
+//   } else {
+//     logger.info('Error Handled', logContext);
+//   }
 
-  // Don't send error details in production for server errors
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  const shouldExposeDetails = isDevelopment || normalizedError.statusCode < 500;
+//   // Don't send error details in production for server errors
+//   const isDevelopment = process.env.NODE_ENV === 'development';
+//   const shouldExposeDetails = isDevelopment || normalizedError.statusCode < 500;
 
-  // Prepare error response
-  const errorResponse: ErrorResponse = {
-    success: false,
-    error: {
-      message: shouldExposeDetails
-        ? normalizedError.message
-        : 'Internal server error',
-      code: normalizedError.code,
-      statusCode: normalizedError.statusCode,
-      timestamp: normalizedError.timestamp.toISOString(),
-      ...(shouldExposeDetails &&
-        normalizedError.context && { context: normalizedError.context }),
-      ...(isDevelopment && { stack: normalizedError.stack }),
-    },
-    requestId,
-  };
+//   // Prepare error response
+//   const errorResponse: ErrorResponse = {
+//     success: false,
+//     error: {
+//       message: shouldExposeDetails
+//         ? normalizedError.message
+//         : 'Internal server error',
+//       code: normalizedError.code,
+//       statusCode: normalizedError.statusCode,
+//       timestamp: normalizedError.timestamp.toISOString(),
+//       ...(shouldExposeDetails &&
+//         normalizedError.context && { context: normalizedError.context }),
+//       ...(isDevelopment && { stack: normalizedError.stack }),
+//     },
+//     requestId,
+//   };
 
-  // Send error response
-  res.status(normalizedError.statusCode).json(errorResponse);
-};
+//   // Send error response
+//   res.status(normalizedError.statusCode).json(errorResponse);
+// };
 
 /**
  * Async error wrapper for route handlers

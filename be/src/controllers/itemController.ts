@@ -1,5 +1,6 @@
 import { CalculationLog } from '@/database/models/CalculationLog';
 import { Item } from '@/database/models/Item';
+import logger from '@/logger';
 import { updateFactor } from '@/services/itemService';
 import { InternalServerError, NotFoundError } from '@/utils/BaseError';
 import { validateRequiredFields } from '@/utils/errors';
@@ -23,16 +24,27 @@ const getItemController = async (req, res, next) => {
   try {
     const item = await Item.findOne({ itemId: itemId });
     if (!item) {
+      logger.error('Item not found', {
+        itemId,
+        operation: 'getItem',
+      });
       throw new NotFoundError('Item not found', {
         itemId,
         operation: 'getItem',
       });
     }
+
     res.status(200).json(item);
   } catch (err) {
+    logger.error('Failed to fetch item', {
+      itemId,
+      operation: 'getItem',
+      error: err.message,
+    });
     throw new InternalServerError('Failed to fetch item', {
       itemId,
       operation: 'getItem',
+      error: err.message,
     });
   }
 };
@@ -61,9 +73,15 @@ const getCalculationLogsController = async (req, res, next) => {
       },
     });
   } catch (error) {
+    logger.error('Failed to fetch calculation logs', {
+      itemId,
+      operation: 'getCalculationLogs',
+      error: error.message,
+    });
     throw new InternalServerError('Failed to fetch calculation logs', {
       itemId,
       operation: 'getCalculationLogs',
+      error: error.message,
     });
   }
 };
