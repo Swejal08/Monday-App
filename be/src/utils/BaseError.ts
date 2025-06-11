@@ -27,9 +27,6 @@ export class BaseError extends Error {
     }
   }
 
-  /**
-   * Convert error to JSON format for API responses
-   */
   toJSON() {
     return {
       name: this.name,
@@ -40,16 +37,6 @@ export class BaseError extends Error {
       ...(this.context && { context: this.context }),
       ...(process.env.NODE_ENV === 'development' && { stack: this.stack }),
     };
-  }
-
-  /**
-   * Check if error is operational or programming error
-   */
-  static isOperationalError(error: Error): boolean {
-    if (error instanceof BaseError) {
-      return error.isOperational;
-    }
-    return false;
   }
 }
 

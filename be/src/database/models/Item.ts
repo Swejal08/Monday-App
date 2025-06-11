@@ -26,7 +26,6 @@ const ItemSchema: Schema = new Schema({
   },
 });
 
-// Update the updated_at field before saving
 ItemSchema.pre('save', function (next) {
   if (this.isModified() && !this.isNew) {
     this.updated_at = new Date();
@@ -34,7 +33,6 @@ ItemSchema.pre('save', function (next) {
   next();
 });
 
-// Update the updated_at field before updating
 ItemSchema.pre('findOneAndUpdate', function (next) {
   this.set({ updated_at: new Date() });
   next();

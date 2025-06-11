@@ -5,9 +5,7 @@
   "description": "A full-stack Monday.com clone built with React (Frontend) and Node.js (Backend).",
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "test": "turbo test"   
+    "dev": "turbo dev"
   },
   "keywords": [],
   "author": "",

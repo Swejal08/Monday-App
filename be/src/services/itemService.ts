@@ -24,31 +24,31 @@ const upsertItem = async (
   { factor, input }: UpsertItemParams
 ) => {
   try {
-    const update: any = {};
-    if (factor !== undefined) update.factor = factor;
-    if (input !== undefined) update.input = input;
+    const existingItem = await Item.findOne({ itemId });
 
-    let item = await Item.findOne({ itemId: itemId });
-
-    if (item) {
+    if (existingItem) {
       const updatedItem = await Item.findOneAndUpdate(
-        { itemId: itemId },
+        { itemId },
         {
-          $set: update,
-          number: input ?? item.number,
-          factor: factor ?? item.factor,
+          $set: {
+            factor: factor ?? existingItem.factor,
+            number: input ?? existingItem.number,
+            ...(factor !== undefined && { factor }),
+            ...(input !== undefined && { input }),
+          },
         },
         { new: true }
       );
       return updatedItem;
-    } else {
-      const newItem = await Item.create({
-        itemId,
-        factor: factor || 1,
-        number: input,
-      });
-      return newItem;
     }
+
+    const newItem = await Item.create({
+      itemId,
+      factor: factor ?? 1,
+      number: input,
+    });
+
+    return newItem;
   } catch (error) {
     logger.error('Failed to process item upsert', {
       itemId,

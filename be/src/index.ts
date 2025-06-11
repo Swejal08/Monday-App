@@ -1,26 +1,16 @@
 import express from 'express';
-import initMondayClient from 'monday-sdk-js';
 import { DatabaseType, initializeDatabase } from './database/DatabaseFactory';
-import { Item } from '@/database/models/Item';
-import { CalculationLog } from '@/database/models/CalculationLog';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import morgan from 'morgan';
 import webhookRoute from '@/routes/webhookRoute';
 import itemsRoute from '@/routes/itemRoutes';
-import {
-  notFoundHandler,
-  setupGlobalErrorHandlers,
-} from '@/middleware/errorHandler';
+import { setupGlobalErrorHandlers } from '@/middleware/errorHandler';
 
 const app = express();
 const port = process.env.PORT || 8000;
 
-// Load environment variables
 require('dotenv').config();
 
 setupGlobalErrorHandlers();
@@ -29,13 +19,9 @@ app.use(morgan('dev'));
 
 app.use(compression());
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:5173'];
-
 app.use(
   cors({
-    origin: '*',
+    origin: [`${process.env.APP_URL}`],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',
@@ -57,8 +43,6 @@ app.use(
 app.use('/webhook-input', webhookRoute);
 app.use('/items', itemsRoute);
 
-// app.use(errorHandler);
-
 const gracefulShutdown = (signal) => {
   console.log(`Received ${signal}. Shutting down gracefully...`);
 
@@ -79,7 +63,6 @@ const startServer = async () => {
       console.log(`🚀 Server is running on port ${port}`);
     });
 
-    // Handle server errors
     server.on('error', (error) => {
       console.error('Server error:', error);
     });
