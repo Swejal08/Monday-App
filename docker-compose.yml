@@ -14,51 +14,9 @@ services:
     volumes:
       - mongodb_data:/data/db
       - ./be/mongo-init:/docker-entrypoint-initdb.d
-    networks:
-      - monday-network
-
-  # Node.js backend service
-#   backend:
-#     build: ./be
-#     container_name: monday-backend
-#     restart: unless-stopped
-#     ports:
-#       - "8000:8000"
-#     env_file:
-#       - ./be/.env
-#     environment:
-#       - NODE_ENV=development
-#       - MONGODB_URI=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb:27017/${MONGO_DATABASE}?authSource=admin
-#     depends_on:
-#       - mongodb
-#     volumes:
-#       - ./be:/app
-#       - be_node_modules:/app/node_modules
-#     networks:
-#       - monday-network
-
-#   # React frontend service
-#   frontend:
-#     build:
-#       context: ./fe
-#       target: development
-#     container_name: monday-frontend
-#     restart: unless-stopped
-#     ports:
-#       - "5173:5173"
-#     volumes:
-#       - ./fe:/app
-#       - fe_node_modules:/app/node_modules
-#     networks:
-#       - monday-network
-#     depends_on:
-#       - backend
 
 volumes:
   mongodb_data:
-#   be_node_modules:
-#   fe_node_modules:
 
 networks:
   monday-network:
-    driver: bridge

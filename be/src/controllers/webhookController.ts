@@ -8,15 +8,12 @@ import mongoose from 'mongoose';
 import logger from '@/logger';
 
 const inputChangeController = async (req, res, next) => {
-  res.send(req.body);
   const session = await mongoose.startSession();
   const { event } = req.body;
-  console.log(event, 'event');
   const { value, pulseId, boardId } = event;
 
   try {
     session.startTransaction();
-
     const item = await Item.findOne({ itemId: pulseId });
     const factor = item ? item.factor : 1;
     const result = factor * value.value;

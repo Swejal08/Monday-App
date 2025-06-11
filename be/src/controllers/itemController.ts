@@ -36,6 +36,10 @@ const getItemController = async (req, res, next) => {
 
     res.status(200).json(item);
   } catch (err) {
+    if (err instanceof NotFoundError) {
+      return next(err);
+    }
+
     logger.error('Failed to fetch item', {
       itemId,
       operation: 'getItem',

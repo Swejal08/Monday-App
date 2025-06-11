@@ -7,9 +7,7 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "test": "turbo test",
-    "app-up": "sudo docker compose up", 
-    "app-down": "sudo docker compose down"     
+    "test": "turbo test"   
   },
   "keywords": [],
   "author": "",

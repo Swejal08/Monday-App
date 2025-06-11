@@ -30,7 +30,7 @@ const updateOutputColumnValue = async (
       mutation {
         change_simple_column_value(
           item_id: ${itemId},
-          column_id: ${process.env.OUTPUT_COLUMN_ID}, 
+          column_id: "${process.env.OUTPUT_COLUMN_ID}", 
           board_id: ${boardId},
           value: ${mondayValue}
         ) {

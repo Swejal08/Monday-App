@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const useAxiosConfig = (config?: AxiosRequestConfig) => {
   const axiosClient = axios.create({
-    baseURL: process.env.API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_URL,
     ...config,
     headers: {
       'Content-type': 'application/json',

@@ -9,14 +9,7 @@ export class DatabaseFactory {
   static create(type: DatabaseType): IDatabase {
     switch (type) {
       case DatabaseType.MONGODB:
-        const username = process.env.MONGO_USERNAME;
-        const password = process.env.MONGO_PASSWORD;
-        const database = process.env.MONGO_DATABASE;
-        const port = process.env.MONGO_PORT;
-
-        // const connectionString = `mongodb://${username}:${password}@mongodb:${port}/${database}?authSource=admin`;
-        const connectionString =
-          'mongodb+srv://swejalshrestha08:waAi3WIrlhAWcaKw@cluster0.v3018in.mongodb.net/';
+        const connectionString = process.env.MONGODB_URL;
         return new MongoDatabase(connectionString);
 
       default:
@@ -25,7 +18,6 @@ export class DatabaseFactory {
   }
 }
 
-// Singleton pattern for database instance
 let databaseInstance: IDatabase | null = null;
 
 export const getDatabaseInstance = (): IDatabase => {

@@ -101,7 +101,9 @@ const Multiplier = () => {
       const response = await fetcher(`/items/${item.itemId}`);
       setValue('factor', response.factor.toString());
     } catch (err) {
-      console.error(err);
+      if (err.response.status === 404) {
+        return;
+      }
       errorNotification('Failed to fetch factor. Please try again.');
     }
   };
@@ -167,6 +169,7 @@ const Multiplier = () => {
               valueAsNumber: true,
             })}
             onChange={handleFactorChange}
+            disabled={isMutating || history.length === 0}
           />
           <Button
             size="sm"
